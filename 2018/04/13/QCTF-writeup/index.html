@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="QCTF writeupCrypto吃火锅啦~冬至吃饺子，过年过火锅咯~~ aababababbaaaaaaabbabaabbaa bbbabaaabaabaabaaabaabaaaaabaaaaaaaabaabbbaabbab flag格式：flag{xxxx} 很显然的培根密码，五五分组，每个组可以表示一个字符。可以自己写脚本，或者用CTFcryptoCrack工具解密。 滴答滴答滴答滴。。。">
+<meta name="keywords" content="CTF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QCTF writeup">
+<meta property="og:url" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/index.html">
+<meta property="og:site_name" content="Uh3ng">
+<meta property="og:description" content="QCTF writeupCrypto吃火锅啦~冬至吃饺子，过年过火锅咯~~ aababababbaaaaaaabbabaabbaa bbbabaaabaabaabaaabaabaaaaabaaaaaaaabaabbbaabbab flag格式：flag{xxxx} 很显然的培根密码，五五分组，每个组可以表示一个字符。可以自己写脚本，或者用CTFcryptoCrack工具解密。 滴答滴答滴答滴。。。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/01.png">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/02.png">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/03.jpg">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/04.jpeg">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/06.png">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/05.png">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/07.jpeg">
+<meta property="og:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/08.png">
+<meta property="og:updated_time" content="2018-04-18T15:03:30.981Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="QCTF writeup">
+<meta name="twitter:description" content="QCTF writeupCrypto吃火锅啦~冬至吃饺子，过年过火锅咯~~ aababababbaaaaaaabbabaabbaa bbbabaaabaabaabaaabaabaaaaabaaaaaaaabaabbbaabbab flag格式：flag{xxxx} 很显然的培根密码，五五分组，每个组可以表示一个字符。可以自己写脚本，或者用CTFcryptoCrack工具解密。 滴答滴答滴答滴。。。">
+<meta name="twitter:image" content="https://uh3ng.github.io/2018/04/13/QCTF-writeup/01.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://uh3ng.github.io/2018/04/13/QCTF-writeup/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>QCTF writeup | Uh3ng</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uh3ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uh3ng.github.io/2018/04/13/QCTF-writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uh3ng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uh3ng">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">QCTF writeup
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T16:41:03+08:00">2018-04-13</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="QCTF-writeup"><a href="#QCTF-writeup" class="headerlink" title="QCTF writeup"></a>QCTF writeup</h1><h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="吃火锅啦"><a href="#吃火锅啦" class="headerlink" title="吃火锅啦~"></a>吃火锅啦~</h3><p>冬至吃饺子，过年过火锅咯~~</p>
+<p>aababababbaaaaaaabbabaabbaa</p>
+<p>bbbabaaabaabaabaaaba<br>abaaaaabaaaaaaaabaabbbaabbab</p>
+<p>flag格式：flag{xxxx}</p>
+<p>很显然的<a href="https://baike.baidu.com/item/%E5%9F%B9%E6%A0%B9%E5%AF%86%E7%A0%81/2134182?fr=aladdin" target="_blank" rel="noopener">培根密码</a>，五五分组，每个组可以表示一个字符。可以自己写脚本，或者用CTFcryptoCrack工具解密。</p>
+<h3 id="滴答滴答滴答滴。。。"><a href="#滴答滴答滴答滴。。。" class="headerlink" title="滴答滴答滴答滴。。。"></a>滴答滴答滴答滴。。。</h3><p>..-./.-../.-/–./—-.–/–/—/.-./….././..–.-/-.-./—–/-.././..–.-/../…../..–.-/..-./..-/….-/—–.-</p>
+<p>flag格式：均小写，有下划线，flag{xxxx}</p>
+<p>莫尔斯电码，曾经还用它写过纸条，把密文复制下来到<a href="http://www.atool.org/morse.php" target="_blank" rel="noopener">在线解密网站</a>解密即可。解密之后有个%u7b 和 %u7d的东西，不要慌，那个代表一对大括号。</p>
+<h3 id="喜洋洋"><a href="#喜洋洋" class="headerlink" title="喜洋洋~"></a>喜洋洋~</h3><p>fy3}l0tau_g_1{gt</p>
+<p>flag格式：flag{xxxx}</p>
+<p><a href="https://baike.baidu.com/item/%E6%A0%85%E6%A0%8F%E5%AF%86%E7%A0%81/228209?fr=aladdin" target="_blank" rel="noopener">栅栏密码</a>，同理用CTFcryptoCrack可解，或者自己用记事本手动解密，根据flag格式很容易找出明文。</p>
+<h3 id="这是什么东东？"><a href="#这是什么东东？" class="headerlink" title="这是什么东东？"></a>这是什么东东？</h3><p>7c4f29407893c3m34a6cb7a87bf045c0d<br>看上去应该是md5，但是仔细观察发现多了一位，应该是32位才对，有个字母乱入了，把m删掉就行，毕竟十六进制最多就到f，附上<a href="http://www.cmd5.com/" target="_blank" rel="noopener">解密网站</a></p>
+<h3 id=""><a href="#" class="headerlink" title=".!?"></a>.!?</h3><p>….. ….. ….. ….. !?!!. ?…. ….. ….. ….. .?.?! .?… .!…<br>….. ….. !.?.. ….. !?!!. ?!!!! !!?.? !.?!! !!!.. ….. ….. .!.?.<br>….. …!? !!.?. ….. ..?.? !.?.. ….. .!.?. ….. ….. !?!!. ?!!!!<br>!!!!! !?.?! .?!.? ….. ….! ?!!.? ….. …?. ?!.?. ….. !.?.. …..<br>!?!!. ?!!!! !!?.? !.?!! !!!!! !!!!. ….. …!. ?…. …!? !!.?. …..<br>?.?!. ?..!. ?…. ….. !?!!. ?!!!! !!!!? .?!.? !!!!! !!!!! !!!.? …..<br>..!?! !.?.. ….? .?!.? ….! .!!!. !!!!! !!!!! !!!!! !!.?. ….. .!?!!<br>.?… …?. ?!.?. ….. !.!!! !!!!! !.?.. ….. ..!?! !.?.. ….. .?.?!<br>.?… ….. !.?.</p>
+<p>一种编码<a href="https://www.splitbrain.org/services/ook" target="_blank" rel="noopener">Brainfuck/Ook</a>，用提供的网站解密即可。另外推荐一篇博客<a href="https://blog.csdn.net/qq_39091609/article/details/78627776" target="_blank" rel="noopener">CTF密码学（Crypto）一些在线解密网站</a></p>
+<h3 id="托马斯-杰斐逊"><a href="#托马斯-杰斐逊" class="headerlink" title="托马斯.杰斐逊"></a>托马斯.杰斐逊</h3><p><img src="/2018/04/13/QCTF-writeup/01.png" alt=""></p>
+<p>密钥里面的数字对应题目中的行号，密文里的字母表示对应密钥那一行的开头字母，每一行都包含了26个全部英文字母。比如第一个密钥和密文，选取第二行从H开始，把H以后的序列（包含H）剪切到该行的开头，变成<strong>HGVSFUWI</strong>KPBELNACZDTRXMJQOY(<strong>加粗部分是剪切过来的</strong>)这样就相当于把每行当成一个转盘，首尾循环。然后按照密钥行号的顺序排列每次得出的序列，得到解密后的情况如图中结果部分</p>
+<p><img src="/2018/04/13/QCTF-writeup/02.png" alt=""></p>
+<p>尝试读取每一列的字母，发现只有倒数第二十一列里的字母连起来有意义，flag为×××××××××admin,注意大小写。</p>
+<h3 id="来自宇宙的信号"><a href="#来自宇宙的信号" class="headerlink" title="来自宇宙的信号"></a>来自宇宙的信号</h3><p>银河战队出击</p>
+<p>flag格式 flag{字母小写}</p>
+<p><img src="/2018/04/13/QCTF-writeup/03.jpg" alt=""></p>
+<p>一开始以为是盲文，结果看了几个盲文表后没有对上的，除了图片外唯一的提示就是那个“银河战队出击”，网上搜一下也都是没有价值的东西，百度识图也没有结果，忍不住把题目一放就搜到了writeup</p>
+<p><img src="/2018/04/13/QCTF-writeup/04.jpeg" alt=""></p>
+<p>之后我认识到了一个新东西<a href="https://baike.baidu.com/item/%E6%A0%87%E5%87%86%E9%93%B6%E6%B2%B3%E5%AD%97%E6%AF%8D/2691355?fr=aladdin" target="_blank" rel="noopener">标准银河字母</a>,真是长见识。把字母表拿来一对比，写出flag，这题就这么过吧。</p>
+<h3 id="猪圈"><a href="#猪圈" class="headerlink" title="猪圈"></a>猪圈</h3><p><strong>密文太长，为了显示方便，我在写的时候中间有换行符</strong></p>
+<p>R29kIGpvYjo1NzY1NkM2QzIwNjQ2RjZFNjUzQTRBMzU1ODQ3NTkzNjRBNDE0RTM1NTg0NzRCNDk0NDU<br>0NEY1MjUzNTg0MTQ5NDQ0MjRGMzU1MTU4NTM0RjUzNTI0NzQ5MzQ1ODRCNTc1MjU0NEE0QTU1NDc0OT<br>UzNDM1NzRGNEU0RDU2NTE1NTU0NTE0RDQ5NUE0NDRCMzY1MzUwNEU1NTM0NTc1NTU5NEM0RjQ5NDkzM<br>zU3NEIzMzRDNTU0RjQyNTI1NzMyMzQ0MjU0NEQ0QTRDNTQ1MTM1NDQ0MzQ3NEEzNDQ4NDc1OTRDNEE0<br>NzQ2MzI1NzQ1NTYzMzU5NDc0RTQ3NDY0RjM0NDQ1NzRENTY0NDU3NTczNTQ0NDU0OTM0NTk1ODRENTk<br>1MzQ4NDc1NjM0NTc0NTMzNEE1QTQ3NDI1MzQ3MzI0RDRDMzI0RDVBNDk1NDMyNTA0OTNE</p>
+<p>这题需要用到很多密码，就给出一段密文，首先base64解密，得密文：<br>God job:57656C6C20646F6E653A4A35584759364A414E3558474B4944544F525358414944424F35515<br>8534F5352474934584B5752544A4A5547495343574F4E4D56515554514D495A444B3653504E5534<br>5755594C4F494933574B334C554F425257323442544D4A4C5451354443474A344847594C4A47463<br>25745563359474E47464F3444574D56445757354445493459584D5953484756345745334A5A4742<br>5347324D4C324D5A49543250493D<br>然后把冒号之后的密文放到一个文件里，写脚本两两分组，每个分组含两个十六进制字符，尝试用ASCII码解密每个组</p>
+<p><img src="/2018/04/13/QCTF-writeup/06.png" alt=""></p>
+<p>解密结果是：<br><img src="/2018/04/13/QCTF-writeup/05.png" alt=""><br>报错是因为文件末尾有个迷之空白字符，不影响做题，我们只需要关注那段base32代码（等号之前的字符串）就好，到网站解密base32得到Only one step away:Q29uZ3JhdHVsYXRpb25zOm9janB7emtpcmp3bW8tb2xsai1ubWx3LWpveGktdG1vbG5ybm90dm1zfQ==</p>
+<p>然后继续base64得到：<br>Congratulations:ocjp{zkirjwmo-ollj-nmlw-joxi-tmolnrnotvms}<br>emmm….还差最后一步，这一步需要联系题目“猪圈”，找到这么一张图表</p>
+<p><img src="/2018/04/13/QCTF-writeup/07.jpeg" alt=""></p>
+<p>然后以ocjp肯定对应flag为突破口，得知只要把左右两张表对应位置上的字母调换就可得出最终的flag。</p>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="签到题"><a href="#签到题" class="headerlink" title="签到题"></a>签到题</h3><p>加群，找公告，过～</p>
+<h3 id="killer-is-coming"><a href="#killer-is-coming" class="headerlink" title="killer is coming"></a>killer is coming</h3><p>下载图片后用hexeditor打开或者记事本打开，搜索flag<br><img src="/2018/04/13/QCTF-writeup/08.png" alt=""></p>
+<h3 id="killer2-is-coming"><a href="#killer2-is-coming" class="headerlink" title="killer2 is coming"></a>killer2 is coming</h3><p>与上题解法类似，不说了，过</p>
+<h3 id="来自13区的祝福"><a href="#来自13区的祝福" class="headerlink" title="来自13区的祝福"></a>来自13区的祝福</h3><p>rot13加密，再加密一次可以得到原文,<a href="http://www.mxcz.net/tools/rot13.aspx" target="_blank" rel="noopener">解密网站</a></p>
+<h3 id="好多字符哦"><a href="#好多字符哦" class="headerlink" title="好多字符哦~"></a>好多字符哦~</h3><p>只关注每组末尾的两位十六进制数，转成字符就得到flag。</p>
+<h3 id="Oh-no-There-are-so-much-killers-！"><a href="#Oh-no-There-are-so-much-killers-！" class="headerlink" title="Oh no!!!!There are so much killers!!！"></a>Oh no!!!!There are so much killers!!！</h3><p>binwalk</p>
+<p><strong>(有事暂时离开，待更。。。)</strong></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #bbb;font-size:14px;">-------------本文结束,感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/12/知乎头像抓取过程分析/" rel="next" title="知乎头像抓取过程分析">
+                <i class="fa fa-chevron-left"></i> 知乎头像抓取过程分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/16/Hexo搭建可以随处迁移的博客/" rel="prev" title="Hexo搭建可以随处迁移的博客">
+                Hexo搭建可以随处迁移的博客 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Uh3ng</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#QCTF-writeup"><span class="nav-number">1.</span> <span class="nav-text">QCTF writeup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Crypto"><span class="nav-number">1.1.</span> <span class="nav-text">Crypto</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#吃火锅啦"><span class="nav-number">1.1.1.</span> <span class="nav-text">吃火锅啦~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#滴答滴答滴答滴。。。"><span class="nav-number">1.1.2.</span> <span class="nav-text">滴答滴答滴答滴。。。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#喜洋洋"><span class="nav-number">1.1.3.</span> <span class="nav-text">喜洋洋~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#这是什么东东？"><span class="nav-number">1.1.4.</span> <span class="nav-text">这是什么东东？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">1.1.5.</span> <span class="nav-text">.!?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#托马斯-杰斐逊"><span class="nav-number">1.1.6.</span> <span class="nav-text">托马斯.杰斐逊</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#来自宇宙的信号"><span class="nav-number">1.1.7.</span> <span class="nav-text">来自宇宙的信号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#猪圈"><span class="nav-number">1.1.8.</span> <span class="nav-text">猪圈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Misc"><span class="nav-number">1.2.</span> <span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#签到题"><span class="nav-number">1.2.1.</span> <span class="nav-text">签到题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#killer-is-coming"><span class="nav-number">1.2.2.</span> <span class="nav-text">killer is coming</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#killer2-is-coming"><span class="nav-number">1.2.3.</span> <span class="nav-text">killer2 is coming</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#来自13区的祝福"><span class="nav-number">1.2.4.</span> <span class="nav-text">来自13区的祝福</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#好多字符哦"><span class="nav-number">1.2.5.</span> <span class="nav-text">好多字符哦~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oh-no-There-are-so-much-killers-！"><span class="nav-number">1.2.6.</span> <span class="nav-text">Oh no!!!!There are so much killers!!！</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!-- <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script> --!>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uh3ng</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+<!-- <div class="powered-by">
+<i class="fa fa-user-md"></i>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div> --!>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

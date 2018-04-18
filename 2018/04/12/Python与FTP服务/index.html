@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="FTP服务端使用python的pyftpdlib库可以创建一个简单的FTP服务，首先需要安装这个库。安装很简单，打开命令行用pip直接安装就可以： 123pip install pyftpdlib  #或者  #python -m pip install pyftpdlib FTP分为被动模式和主动模式，这里不细说了，下面的例子采用的是被动模式的代码 12345678910111213141516">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python与FTP服务">
+<meta property="og:url" content="https://uh3ng.github.io/2018/04/12/Python与FTP服务/index.html">
+<meta property="og:site_name" content="Uh3ng">
+<meta property="og:description" content="FTP服务端使用python的pyftpdlib库可以创建一个简单的FTP服务，首先需要安装这个库。安装很简单，打开命令行用pip直接安装就可以： 123pip install pyftpdlib  #或者  #python -m pip install pyftpdlib FTP分为被动模式和主动模式，这里不细说了，下面的例子采用的是被动模式的代码 12345678910111213141516">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-18T15:03:30.981Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python与FTP服务">
+<meta name="twitter:description" content="FTP服务端使用python的pyftpdlib库可以创建一个简单的FTP服务，首先需要安装这个库。安装很简单，打开命令行用pip直接安装就可以： 123pip install pyftpdlib  #或者  #python -m pip install pyftpdlib FTP分为被动模式和主动模式，这里不细说了，下面的例子采用的是被动模式的代码 12345678910111213141516">
+
+
+
+
+
+
+  <link rel="canonical" href="https://uh3ng.github.io/2018/04/12/Python与FTP服务/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Python与FTP服务 | Uh3ng</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uh3ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uh3ng.github.io/2018/04/12/Python与FTP服务/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uh3ng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uh3ng">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python与FTP服务
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-12T10:38:28+08:00">2018-04-12</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="FTP服务端"><a href="#FTP服务端" class="headerlink" title="FTP服务端"></a>FTP服务端</h2><p>使用python的pyftpdlib库可以创建一个简单的FTP服务，首先需要安装这个库。安装很简单，打开命令行用pip直接安装就可以：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install pyftpdlib  </span><br><span class="line"><span class="meta">#</span>或者  </span><br><span class="line"><span class="meta">#</span>python -m pip install pyftpdlib</span><br></pre></td></tr></table></figure>
+<p>FTP分为被动模式和主动模式，这里不细说了，下面的例子采用的是被动模式的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyftpdlib.authorizers <span class="keyword">import</span> DummyAuthorizer  </span><br><span class="line"><span class="keyword">from</span> pyftpdlib.handlers <span class="keyword">import</span> FTPHandler  </span><br><span class="line"><span class="keyword">from</span> pyftpdlib.servers <span class="keyword">import</span> FTPServer  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#创建FTP用户验证  </span></span><br><span class="line">authorizer = DummyAuthorizer()  </span><br><span class="line"><span class="comment">#添加一个用户，依次为用户名，登录口令，目录，权限  </span></span><br><span class="line">authorizer.add_user(<span class="string">'username'</span>, <span class="string">'your_pass'</span>, <span class="string">'用户目录'</span>, perm=<span class="string">'elradfmw'</span>)  </span><br><span class="line"><span class="comment">#创建句柄  </span></span><br><span class="line">handler = FTPHandler  </span><br><span class="line">handler.authorizer = authorizer  </span><br><span class="line"><span class="comment">#FTP被动模式下的端口号范围，主动模式不用设置  </span></span><br><span class="line">handler.passive_ports = range(<span class="number">2000</span>, <span class="number">2333</span>)  </span><br><span class="line"><span class="comment">#绑定监听的ip和端口号  </span></span><br><span class="line">server = FTPServer((<span class="string">'192.168.XX.XXX'</span>, <span class="number">21</span>), handler)  </span><br><span class="line"><span class="comment">#开启服务  </span></span><br><span class="line">server.serve_forever()</span><br></pre></td></tr></table></figure>
+<h2 id="FTP客户端"><a href="#FTP客户端" class="headerlink" title="FTP客户端"></a>FTP客户端</h2><p>客户端的实现也不算复杂，本文只是简单的实现了文件的上传和下载功能<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ftplib  </span><br><span class="line"><span class="keyword">import</span> sys  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#获取服务器的ip地址（如192.168.1.107），使用sys.argv可以从命令行参数里面获取  </span></span><br><span class="line"><span class="keyword">if</span> len(sys.argv) &lt; <span class="number">2</span>:  </span><br><span class="line">    tmp = input(<span class="string">"please input server address:"</span>)  </span><br><span class="line">    sys.argv.append(tmp)  </span><br><span class="line">server_address = sys.argv[<span class="number">1</span>]  </span><br><span class="line"><span class="comment">#创建FTP实例，并显示欢迎界面  </span></span><br><span class="line">ftp = ftplib.FTP(server_address)  </span><br><span class="line">print(ftp.getwelcome())  </span><br><span class="line"><span class="comment">#登录，输入服务器里添加过的用户名和口令  </span></span><br><span class="line">ftp.login(<span class="string">'user'</span>, <span class="string">'pass'</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#文件上传  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">(fname)</span>:</span>  </span><br><span class="line">    fd = open(fname, <span class="string">'rb'</span>)  </span><br><span class="line">    new_name = input(<span class="string">"input new name:"</span>)  </span><br><span class="line">    <span class="comment">#以二进制的形式上传  </span></span><br><span class="line">    ftp.storbinary(<span class="string">"STOR %s"</span> % new_name, fd)  </span><br><span class="line">    fd.close()  </span><br><span class="line">    print(<span class="string">"upload finished"</span>)  </span><br><span class="line">      </span><br><span class="line"><span class="comment">#文件下载  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">download</span><span class="params">(fname)</span>:</span>  </span><br><span class="line">    <span class="comment">#构建文件的存储路径，这里用的是D盘,可以自行设置  </span></span><br><span class="line">    new_path = <span class="string">"D:\\FTPdownload\\"</span> + fname  </span><br><span class="line">    fd = open(new_path, <span class="string">'wb'</span>)  </span><br><span class="line">    <span class="comment">#以二进制形式下载，注意第二个参数是fd.write，上传时是fd  </span></span><br><span class="line">    ftp.retrbinary(<span class="string">"RETR %s"</span> % fname, fd.write)  </span><br><span class="line">    fd.close()  </span><br><span class="line">    print(<span class="string">"download finished"</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span>  </span><br><span class="line">    <span class="comment">#选择操作，上传、下载、退出  </span></span><br><span class="line">    op = input(<span class="string">"what do you want?(u/d/q)"</span>)  </span><br><span class="line">    <span class="keyword">if</span> op == <span class="string">"u"</span>:  </span><br><span class="line">        <span class="comment">#输入文件完整路径，必要时可以用绝对路径  </span></span><br><span class="line">        fname = input(<span class="string">"input the file of path:"</span>)  </span><br><span class="line">        upload(fname)  </span><br><span class="line">    <span class="keyword">elif</span> op == <span class="string">"d"</span>:  </span><br><span class="line">        fname = input(<span class="string">"input the file name:"</span>)  </span><br><span class="line">        download(fname)  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        print(<span class="string">"quit now!"</span>)  <span class="keyword">import</span> ftplib  </span><br><span class="line"><span class="keyword">import</span> sys  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#获取服务器的ip地址（如192.168.1.107），使用sys.argv可以从命令行参数里面获取  </span></span><br><span class="line"><span class="keyword">if</span> len(sys.argv) &lt; <span class="number">2</span>:  </span><br><span class="line">    tmp = input(<span class="string">"please input server address:"</span>)  </span><br><span class="line">    sys.argv.append(tmp)  </span><br><span class="line">server_address = sys.argv[<span class="number">1</span>]  </span><br><span class="line"><span class="comment">#创建FTP实例，并显示欢迎界面  </span></span><br><span class="line">ftp = ftplib.FTP(server_address)  </span><br><span class="line">print(ftp.getwelcome())  </span><br><span class="line"><span class="comment">#登录，输入服务器里添加过的用户名和口令  </span></span><br><span class="line">ftp.login(<span class="string">'user'</span>, <span class="string">'pass'</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="comment">#文件上传  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">(fname)</span>:</span>  </span><br><span class="line">    fd = open(fname, <span class="string">'rb'</span>)  </span><br><span class="line">    new_name = input(<span class="string">"input new name:"</span>)  </span><br><span class="line">    <span class="comment">#以二进制的形式上传  </span></span><br><span class="line">    ftp.storbinary(<span class="string">"STOR %s"</span> % new_name, fd)  </span><br><span class="line">    fd.close()  </span><br><span class="line">    print(<span class="string">"upload finished"</span>)  </span><br><span class="line">      </span><br><span class="line"><span class="comment">#文件下载  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">download</span><span class="params">(fname)</span>:</span>  </span><br><span class="line">    <span class="comment">#构建文件的存储路径，这里用的是D盘,可以自行设置  </span></span><br><span class="line">    new_path = <span class="string">"D:\\FTPdownload\\"</span> + fname  </span><br><span class="line">    fd = open(new_path, <span class="string">'wb'</span>)  </span><br><span class="line">    <span class="comment">#以二进制形式下载，注意第二个参数是fd.write，上传时是fd  </span></span><br><span class="line">    ftp.retrbinary(<span class="string">"RETR %s"</span> % fname, fd.write)  </span><br><span class="line">    fd.close()  </span><br><span class="line">    print(<span class="string">"download finished"</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span>  </span><br><span class="line">    <span class="comment">#选择操作，上传、下载、退出  </span></span><br><span class="line">    op = input(<span class="string">"what do you want?(u/d/q)"</span>)  </span><br><span class="line">    <span class="keyword">if</span> op == <span class="string">"u"</span>:  </span><br><span class="line">        <span class="comment">#输入文件完整路径，必要时可以用绝对路径  </span></span><br><span class="line">        fname = input(<span class="string">"input the file of path:"</span>)  </span><br><span class="line">        upload(fname)  </span><br><span class="line">    <span class="keyword">elif</span> op == <span class="string">"d"</span>:  </span><br><span class="line">        fname = input(<span class="string">"input the file name:"</span>)  </span><br><span class="line">        download(fname)  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        print(<span class="string">"quit now!"</span>)  </span><br><span class="line">    ftp.quit()  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:  </span><br><span class="line">    main()  </span><br><span class="line">    ftp.quit()  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:  </span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></p>
+<h2 id="一些ftplib库的相关操作"><a href="#一些ftplib库的相关操作" class="headerlink" title="一些ftplib库的相关操作"></a>一些ftplib库的相关操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ftp.cwd(pathname)           <span class="comment"># 设置FTP当前操作的路径  </span></span><br><span class="line">ftp.dir()                   <span class="comment"># 显示目录下所有目录的信息  </span></span><br><span class="line">ftp.nlst()                  <span class="comment"># 获取目录下的文件  </span></span><br><span class="line">ftp.mkd(pathname)           <span class="comment"># 新建远程目录  </span></span><br><span class="line">ftp.rmd(dirname)            <span class="comment"># 删除远程目录  </span></span><br><span class="line">ftp.pwd()                   <span class="comment"># 返回当前所在位置  </span></span><br><span class="line">ftp.delete(filename)        <span class="comment"># 删除远程文件  </span></span><br><span class="line">ftp.rename(old_name, new_name)    <span class="comment">#将fromname改为toname  </span></span><br><span class="line">ftp.storbinary(<span class="string">'STOR filename.txt'</span>,file_handel,[bufsize])  <span class="comment"># 上传目标文件,最后一个参数可以不填  </span></span><br><span class="line">ftp。retrbinary(<span class="string">'RETR filename.txt'</span>,file_handel,[bufsize])  <span class="comment"># 下载FTP文件</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #bbb;font-size:14px;">-------------本文结束,感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/12/知乎头像抓取过程分析/" rel="prev" title="知乎头像抓取过程分析">
+                知乎头像抓取过程分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Uh3ng</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FTP服务端"><span class="nav-number">1.</span> <span class="nav-text">FTP服务端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FTP客户端"><span class="nav-number">2.</span> <span class="nav-text">FTP客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些ftplib库的相关操作"><span class="nav-number">3.</span> <span class="nav-text">一些ftplib库的相关操作</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <!-- <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script> --!>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uh3ng</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+<!-- <div class="powered-by">
+<i class="fa fa-user-md"></i>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div> --!>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
